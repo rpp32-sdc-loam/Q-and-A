@@ -1,4 +1,5 @@
 const Question = require('../models/Question');
+const pool = require('../../config/dbs/postgres');
 
 // @desc    Get all questions for a product
 //@route    GET /qa/questions

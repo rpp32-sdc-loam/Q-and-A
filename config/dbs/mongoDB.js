@@ -9,7 +9,7 @@ const connectDB = async () => {
     });
     console.log(`MongoDB connected: ${conn.connection.host}`.cyan.underline.bold);
   } catch (error) {
-    console.log('Error connecting to MDB', error.message);
+    console.log('Error connecting to Atlas DB', error.message);
   }
 }
 

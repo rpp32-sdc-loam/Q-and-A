@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const colors = require('colors');
-const connectDB = require('./config/db');
+const connectDB = require('./config/dbs/mongoDB');
 
 dotenv.config({ path: './config/config.env' });
 
