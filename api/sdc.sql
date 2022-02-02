@@ -1,4 +1,4 @@
-CREATE DATABASE QandA;
+CREATE DATABASE sdc;
 
 --\c into QandA
 
