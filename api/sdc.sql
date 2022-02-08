@@ -10,8 +10,8 @@ CREATE TABLE question (
   email varchar(60) not null,
   date timestamp not null,
   helpfulness int,
-  reported boolean not null,
-  answers json,
+  reported boolean,
+  answers jsonb,
   primary key(question_id)
 );
 
@@ -23,7 +23,7 @@ CREATE TABLE answer (
   email varchar(60) not null,
   date timestamp not null,
   helpfulness int,
-  reported boolean not null,
+  reported boolean,
   photos: text [],
   primary key(answer_id),
   foreign key(question_id) references question(question_id)
