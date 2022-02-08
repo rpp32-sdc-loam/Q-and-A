@@ -1,4 +1,5 @@
 const Answer = require('../models/Answer');
+const pool = require('../../config/dbs/postgres');
 
 // @desc    Get all answers for a question
 //@route    GET /qa/questions/:question_id/answers

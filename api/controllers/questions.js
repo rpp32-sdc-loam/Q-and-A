@@ -1,4 +1,5 @@
 const Question = require('../models/Question');
+const pool = require('../../config/dbs/postgres');
 
 // @desc    Get all questions for a product
 //@route    GET /qa/questions
@@ -9,15 +10,13 @@ exports.getQuestions = (req, res, next) => {
 
 // @desc    Add question for a product
 //@route    POST /qa/questions
-exports.createQuestion = (req, res, next) => {
-  // try {
-  //   const question = await Question.create(req.body);
-  //   res.status(201).json({ success: true, data: question });
-  // } catch (error) {
-  //   console.log(error.message);
-  // }
-  console.log(req.body);
-  res.status(201).json({ success: true, msg: `Added question for product# ${req.body.product_id}` });
+exports.createQuestion = async (req, res, next) => {
+  try {
+    const question = await Question.create(req.body);
+    res.status(201).json({ success: true, data: question });
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 // @desc    Update helpfulness of question
