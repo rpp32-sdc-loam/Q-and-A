@@ -13,7 +13,6 @@ const questions = require('./api/routes/questions');
 const answers = require('./api/routes/answers');
 
 const app = express();
-
 app.use(express.json());
 
 //mount routers
