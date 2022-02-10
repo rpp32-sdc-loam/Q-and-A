@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --watch --coverage",
     "start": "NODE_ENV=production node server",
-    "dev": "nodemon server"
+    "dev": "nodemon server",
+    "mongo": "brew services start mongodb-community@5.0"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "express": "^4.17.2",
     "jest": "^27.4.7",
     "mongoose": "^6.1.8",
+    "mongoose-sequence": "^5.3.1",
     "pg": "^8.7.1"
   },
   "devDependencies": {

@@ -1,17 +1,29 @@
 const mongoose = require('mongoose');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const Schema = mongoose.Schema;
 
-const QuestionSchema = new Schema({
+const CounterSchema = new Schema({
+  _id: { type: String, required: true },
+  seq: {
+    type: Number, default:
+      3518964
+  }
+});
 
+var counter = mongoose.model('counter', CounterSchema);
+
+const QuestionSchema = new Schema({
+  question_id: {
+    type: Number
+  },
   product_id: {
     type: Number,
-    required: [true, 'Please add a product id'],
-    unique: true,
+    required: [true, 'Please add a product id']
   },
   question_body: {
     type: String,
     required: [true, 'Please add a question'],
-    unique: true,
+    unique: true
   },
   asker_name: String,
   email: {
@@ -24,12 +36,23 @@ const QuestionSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  question_helpfulness: Number,
+  question_helpfulness: {
+    type: Number,
+    default: 0
+  },
   reported: {
     type: Boolean,
     default: false
   },
-  answers: {}
+  answers: {
+    default: {}
+  }
 })
 
+QuestionSchema.plugin(AutoIncrement, {
+  inc_field: 'question_id', start_seq:
+    3518964
+});
+
 module.exports = mongoose.model('Question', QuestionSchema);
+

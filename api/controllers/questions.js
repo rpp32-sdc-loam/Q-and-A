@@ -3,9 +3,13 @@ const pool = require('../../config/dbs/postgres');
 
 // @desc    Get all questions for a product
 //@route    GET /qa/questions
-exports.getQuestions = (req, res, next) => {
-  console.log(req.body);
-  res.status(200).json({ success: true, msg: `get questions for product# ${req.body.product_id}` });
+exports.getQuestions = async (req, res, next) => {
+  try {
+    const questions = await Question.find({ product_id: req.query.product_id });
+    res.status(200).json({ success: true, data: questions[0].answers });
+  } catch (err) {
+    res.status(400).json({ success: false, msg: err.message })
+  }
 }
 
 // @desc    Add question for a product
@@ -15,18 +19,34 @@ exports.createQuestion = async (req, res, next) => {
     const question = await Question.create(req.body);
     res.status(201).json({ success: true, data: question });
   } catch (error) {
-    console.log(error.message);
+    res.status(400).json({ success: false, msg: err.message });
   }
 };
 
 // @desc    Update helpfulness of question
 //@route    PUT /qa/questions/:question_id/helpful
-exports.updateQuestionHelpfulness = (req, res, next) => {
-  res.status(200).json({ success: true, msg: `updated answer ${req.params.question_id} helpfulness` });
+exports.updateQuestionHelpfulness = async (req, res, next) => {
+  try {
+    const question = await Question.findOneAndUpdate(
+      { question_id: req.params.question_id },
+      { $inc: { question_helpfulness: 1 } }
+    )
+    res.status(200).json({ success: true, data: question });
+  } catch {
+    res.status(400).json({ success: false, msg: err.message });
+  }
 }
 
 // @desc    Report a question
 //@route    PUT /qa/questions/:question_id/report
-exports.reportQuestion = (req, res, next) => {
-  res.status(200).json({ success: true, msg: `answer ${req.params.question_id} reported` });
+exports.reportQuestion = async (req, res, next) => {
+  try {
+    const question = await Question.findOneAndUpdate(
+      { question_id: req.params.question_id },
+      { $set: { reported: true } }
+    )
+    res.status(200).json({ success: true, data: question });
+  } catch {
+    res.status(400).json({ success: false, msg: err.message });
+  }
 }
