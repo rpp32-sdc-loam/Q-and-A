@@ -1,34 +1,29 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const AnswerSchema = new Schema({
-  question_id: {
+const answerSchema = new Schema({
+  question: {
     type: Number,
     required: true,
-    unique: true,
+    unique: true
   },
-  body: {
-    type: String,
-    required: [true, 'Please add an answer'],
-    unique: true,
+  page: {
+    type: Number,
+    default: 1
   },
-  answerer_name: String,
-  email: {
-    type: String,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please use a valid email']
+  count: {
+    type: Number,
+    default: 5
   },
-  photos: [String],
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  helpfulness: Number,
-  reported: {
-    type: Boolean,
-    default: false
-  }
-})
+  results: []
+});
 
-module.exports = mongoose.model('Answer', AnswerSchema);
+// answerSchema.pre('save', function (next) {
+//   this.question_id = this.req.params.question_id;
+//   //must include next or code will get stuck on this line
+//   next();
+//   //INSTEAD OF next() YOU CAN THROW AN ERROR TO STOP ACTION
+//   // throw new Error('Save Failed');
+// });
+
+module.exports = mongoose.model('Answer', answerSchema);

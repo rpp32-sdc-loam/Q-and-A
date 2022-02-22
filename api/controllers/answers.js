@@ -1,32 +1,60 @@
 const Answer = require('../models/Answer');
+const AnswerEntry = require('../models/AnswerEntry');
 const pool = require('../../config/dbs/postgres');
 
 // @desc    Get all answers for a question
 //@route    GET /qa/questions/:question_id/answers
-exports.getAnswers = (req, res, next) => {
-  res.status(200).json({ success: true, msg: `get answers for question# ${req.params.question_id}` });
+exports.getAnswers = async (req, res, next) => {
+  try {
+    const answers = await Answer.find({ question: req.params.question_id });
+    console.log(answers[0]);
+    res.status(200).json(answers[0]);
+  } catch (err) {
+    res.status(400).json({ success: false, msg: err.message })
+  }
 }
 
 // @desc    Add an answer to a question
 //@route    POST /qa/questions/:question_id/answers
-exports.createAnswer = (req, res, next) => {
-  // try {
-  //   const bootcamp = await Bootcamp.create(req.body);
-  //   res.status(201).json({ success: true, data: bootcamp });
-  // } catch (error) {
-  //   console.log(error.message);
-  // }
-  res.status(201).json({ success: true, msg: `Added answer for question# ${req.params.question_id}` });
+exports.createAnswer = async (req, res, next) => {
+  try {
+    const newAnswer = await AnswerEntry.create({ body: req.body.body, answerer_name: req.body.name });
+    await Answer.findOneAndUpdate({ question: req.params.question_id },
+      { $push: { results: newAnswer } }
+    );
+    res.status(201).json({ success: true });
+  } catch (err) {
+    res.status(400).json({ success: false, msg: err.message });
+  }
 };
 
 // @desc    Update helpfulness of answer
 //@route    PUT /qa/answers/:answer_id/helpful
-exports.updateAnswerHelpfulness = (req, res, next) => {
-  res.status(200).json({ success: true, msg: `updated answer ${req.params.answer_id} helpfulness` });
+exports.updateAnswerHelpfulness = async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.answer_id);
+    await Answer.findOneAndUpdate(
+      { 'results.answer_id': id },
+      { $inc: { 'results.$.helpfulness': 1 } }
+    );
+    res.status(200).json({ success: true, msg: `updated answer ${req.params.answer_id} helpfulness` });
+  } catch (err) {
+    res.status(400).json({ success: false, msg: err.message });
+  }
 }
 
 // @desc    Report an answer
 //@route    PUT /qa/answers/:answer_id/report
-exports.reportAnswer = (req, res, next) => {
-  res.status(200).json({ success: true, msg: `answer ${req.params.answer_id} reported` });
+exports.reportAnswer = async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.answer_id);
+    await Answer.findOneAndUpdate(
+      { 'results.answer_id': id },
+      { $set: { 'results.$.reported': true } }
+    );
+    res.status(200).json({ success: true, msg: `reported answer ${req.params.answer_id}` });
+  } catch (err) {
+    res.status(400).json({ success: false, msg: err.message });
+  }
+  // res.status(200).json({ success: true, msg: `answer ${req.params.answer_id} reported` });
 }

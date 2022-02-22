@@ -1,12 +1,13 @@
 const Question = require('../models/Question');
-const pool = require('../../config/dbs/postgres');
+const QuestionEntry = require('../models/QuestionEntry');
+// const pool = require('../../config/dbs/postgres');
 
 // @desc    Get all questions for a product
 //@route    GET /qa/questions
 exports.getQuestions = async (req, res, next) => {
   try {
     const questions = await Question.find({ product_id: req.query.product_id });
-    res.status(200).json({ success: true, data: questions[0].answers });
+    res.status(200).json(questions[0]);
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message })
   }
@@ -16,9 +17,13 @@ exports.getQuestions = async (req, res, next) => {
 //@route    POST /qa/questions
 exports.createQuestion = async (req, res, next) => {
   try {
-    const question = await Question.create(req.body);
-    res.status(201).json({ success: true, data: question });
-  } catch (error) {
+    const newQuestion = await QuestionEntry.create(req.body);
+    const questionList = await Question.findOneAndUpdate(
+      { product_id: req.body.product_id },
+      { $push: { results: newQuestion } }
+    );
+    res.status(201).json({ success: true });
+  } catch (err) {
     res.status(400).json({ success: false, msg: err.message });
   }
 };
@@ -27,12 +32,13 @@ exports.createQuestion = async (req, res, next) => {
 //@route    PUT /qa/questions/:question_id/helpful
 exports.updateQuestionHelpfulness = async (req, res, next) => {
   try {
-    const question = await Question.findOneAndUpdate(
-      { question_id: req.params.question_id },
-      { $inc: { question_helpfulness: 1 } }
-    )
-    res.status(200).json({ success: true, data: question });
-  } catch {
+    await Question.findOneAndUpdate(
+      { 'results.question_id': req.params.question_id },
+      { $inc: { 'results.$.question_helpfulness': 1 } }
+    );
+    console.log(req.params);
+    res.status(200).json({ success: true });
+  } catch (err) {
     res.status(400).json({ success: false, msg: err.message });
   }
 }
@@ -41,11 +47,11 @@ exports.updateQuestionHelpfulness = async (req, res, next) => {
 //@route    PUT /qa/questions/:question_id/report
 exports.reportQuestion = async (req, res, next) => {
   try {
-    const question = await Question.findOneAndUpdate(
-      { question_id: req.params.question_id },
-      { $set: { reported: true } }
+    await Question.findOneAndUpdate(
+      { 'results.question_id': req.params.question_id },
+      { $set: { 'results.$.reported': true } }
     )
-    res.status(200).json({ success: true, data: question });
+    res.status(200).json({ success: true });
   } catch {
     res.status(400).json({ success: false, msg: err.message });
   }
