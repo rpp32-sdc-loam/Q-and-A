@@ -9,8 +9,7 @@ const QuestionEntrySchema = new Schema({
   },
   question_body: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   asker_name: String,
 

@@ -5,9 +5,9 @@ const pool = require('../../config/dbs/postgres');
 // @desc    Get all answers for a question
 //@route    GET /qa/questions/:question_id/answers
 exports.getAnswers = async (req, res, next) => {
+  console.log(req.params);
   try {
     const answers = await Answer.find({ question: req.params.question_id });
-    console.log(answers[0]);
     res.status(200).json(answers[0]);
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message })
@@ -56,5 +56,4 @@ exports.reportAnswer = async (req, res, next) => {
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message });
   }
-  // res.status(200).json({ success: true, msg: `answer ${req.params.answer_id} reported` });
 }

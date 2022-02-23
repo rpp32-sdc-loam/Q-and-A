@@ -40,6 +40,14 @@ db.photos_data.aggregate([
 });
 //
 
+db.answerentries.aggregate([
+  {$group: { _id: '$question_id' }}
+]).forEach(function(doc) {
+db.questionentries.updateOne({question_id: doc._id}, {$set: {'hasAnswers': true}})
+});
+
+db.questionentries.updateMany({hasAnswers: {$exists: false}}, {$set: {'hasAnswers': false}})
+
 //populate answers
 db.answerentries.aggregate([
   {
@@ -56,6 +64,8 @@ db.answerentries.aggregate([
   db.answers.insertOne({ question_id: doc._id, page: 1, count: 5, results: doc.results });
 });
 //
+
+db.
 
 //populate questions
 db.questions_data.aggregate([

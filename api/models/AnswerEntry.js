@@ -6,8 +6,7 @@ const answerEntrySchema = new Schema({
   answer_id: Number,
   body: {
     type: String,
-    required: [true, 'Please add an answer'],
-    unique: true
+    required: [true, 'Please add an answer']
   },
   date: {
     type: String,
