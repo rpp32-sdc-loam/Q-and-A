@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test jest --watch --coverage --runInBand --detectOpenHandles",
+    "test": "NODE_ENV=test jest --watch --coverage",
     "start": "NODE_ENV=production node server",
     "dev": "nodemon server",
     "mongo": "brew services start mongodb-community@5.0"

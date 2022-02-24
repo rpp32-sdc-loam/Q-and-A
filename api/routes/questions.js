@@ -10,17 +10,15 @@ const QuestionEntry = require('../models/QuestionEntry');
 const router = express.Router()
 
 router.get('/qa/questions', async (req, res, next) => {
-   if (req.query.product_id === undefined) {
-    res.status(400).json({msg: 'Please include a product_id param'});
-  }
   try {
     const questions = await Question.find({ product_id: req.query.product_id });
-    if (questions.length === 0){
-      res.status(400).json({ success: false, msg: 'The product id was not found' });
+    if (!questions || questions.length === 0){
+      let err = new Error('The product id was not found');
+      throw err;
     }
     res.status(200).json(questions[0]);
   } catch (err) {
-    res.status(400).json({ success: false, msg: err.message })
+    res.status(400).json({ success: false, msg: err.message});
   }
 });
 
@@ -46,14 +44,13 @@ router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
       { 'results.question_id': req.params.question_id },
       { $inc: { 'results.$.question_helpfulness': 1 } }
     );
-
     if (questionUpdate === null) {
-      res.status(400).json({success: false, msg: 'Please include a valid question id'})
+      let err = new Error('Please include a valid question id');
+      throw err;
     }
-    console.log(questionUpdate);
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(400).json({ success: false, msg: err.message });
+    res.status(400).json({ success: false, msg: err.message});
   }
 });
 
@@ -64,12 +61,12 @@ router.put('/qa/questions/:question_id/report', async (req, res, next) => {
       { 'results.question_id': req.params.question_id },
       { $set: { 'results.$.reported': true } }
     )
-       if (questionUpdate === null) {
-      res.status(400).json({success: false, msg: 'Please include a valid question id'})
+    if (questionUpdate === null) {
+      let err = new Error('Please include a valid question id');
+      throw err;
     }
-    console.log(questionUpdate);
     res.status(200).json({ success: true });
-  } catch {
+  } catch(err) {
     res.status(400).json({ success: false, msg: err.message });
   }
 })

@@ -133,15 +133,29 @@ describe('Question helpfulness', () => {
 describe('Report a Question', () => {
   test('report a question route exists', async () => {
     expect.assertions(1);
-    const data = await router.put('/qa/questions/:question_id/reported')
+    const data = await router.put('/qa/questions/:question_id/report')
     expect(data).toBeDefined();
   });
 
-  test('should return 200 if reported successfully', () => {});
+  test('should return 200 if reported successfully', () => {
+    return request(app).put('/qa/questions/4/report')
+    .expect(200);
+  });
 
-  test('should return 400 if the question id is invalid', () => {});
+  test('should return 400 if the question id is invalid', () => {
+    return request(app).put('/qa/questions/abc/report')
+    .expect(400);
+  });
 
-  test('should return 404 if the question id is missing', () => {});
+  test('should return 404 if the question id is missing', () => {
+    return request(app).put('/qa/questions//report')
+    .expect(404);
+  });
 
-  test('should return 400 if the question id is not in the database', () => {});
+  test('should return 400 if the question id is not in the database', () => {
+    return request(app).put('/qa/questions/2344444444/report')
+    .expect(400);
+  });
 });
+
+

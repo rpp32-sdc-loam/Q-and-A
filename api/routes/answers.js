@@ -13,7 +13,8 @@ router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
   try {
     const answers = await Answer.find({ question: req.params.question_id });
     if (answers.length === 0){
-      res.status(400).json({ success: false, msg: 'The question id was not found' });
+      let err = new Error('The question id was not found');
+      throw err;
     }
     res.status(200).json(answers[0]);
   } catch (err) {
@@ -41,7 +42,8 @@ router.put('/qa/answers/:answer_id/helpful', async (req, res, next) => {
       { $inc: { 'results.$.helpfulness': 1 } }
     );
     if (answerUpdate === null) {
-      res.status(400).json({ success: false, msg: 'Please include a valid answer id'});
+      let err = new Error('Please include a valid answer id');
+      throw err;
     }
     res.status(200).json({ success: true, msg: `updated answer ${req.params.answer_id} helpfulness` });
   } catch (err) {
@@ -57,7 +59,8 @@ router.put('/qa/answers/:answer_id/report', async (req, res, next) => {
       { $set: { 'results.$.reported': true } }
     );
      if (answerUpdate === null) {
-      res.status(400).json({ success: false, msg: 'Please include a valid answer id'});
+      let err = new Error('Please include a valid answer id');
+      throw err;
     }
     res.status(200).json({ success: true, msg: `reported answer ${req.params.answer_id}` });
   } catch (err) {
