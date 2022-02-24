@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch --coverage",
+    "test": "NODE_ENV=test jest --watch --coverage --runInBand --detectOpenHandles",
     "start": "NODE_ENV=production node server",
     "dev": "nodemon server",
     "mongo": "brew services start mongodb-community@5.0"
@@ -27,7 +27,9 @@
     "jest": "^27.4.7",
     "mongoose": "^6.1.8",
     "mongoose-sequence": "^5.3.1",
-    "pg": "^8.7.1"
+    "msw": "^0.38.1",
+    "pg": "^8.7.1",
+    "supertest": "^6.2.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

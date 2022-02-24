@@ -4,14 +4,16 @@ const Schema = mongoose.Schema;
 
 const QuestionEntrySchema = new Schema({
   product_id: Number,
-  question_id: {
-    type: Number
-  },
+
+  question_id: Number,
   question_body: {
     type: String,
     required: true
   },
-  asker_name: String,
+  asker_name: {
+    type: String,
+    required: true
+  },
 
   question_date: {
     type: String,

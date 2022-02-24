@@ -12,7 +12,10 @@ const answerEntrySchema = new Schema({
     type: String,
     default: new Date().toISOString()
   },
-  answerer_name: String,
+  answerer_name: {
+    type: String,
+    required: [true, 'Please add a name']
+  },
   helpfulness: {
     type: Number,
     default: 0

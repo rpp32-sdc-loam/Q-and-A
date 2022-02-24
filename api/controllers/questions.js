@@ -5,8 +5,14 @@ const QuestionEntry = require('../models/QuestionEntry');
 // @desc    Get all questions for a product
 //@route    GET /qa/questions
 exports.getQuestions = async (req, res, next) => {
+   if (req.query.product_id === undefined) {
+    res.status(400).json({msg: 'Please include a product_id param'});
+  }
   try {
     const questions = await Question.find({ product_id: req.query.product_id });
+    if (questions === null){
+      res.status(400).json({ success: false, msg: 'The product id was not found' });
+    }
     res.status(200).json(questions[0]);
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message })
@@ -35,10 +41,15 @@ exports.createQuestion = async (req, res, next) => {
 //@route    PUT /qa/questions/:question_id/helpful
 exports.updateQuestionHelpfulness = async (req, res, next) => {
   try {
-    await Question.findOneAndUpdate(
+    const questionUpdate = await Question.findOneAndUpdate(
       { 'results.question_id': req.params.question_id },
       { $inc: { 'results.$.question_helpfulness': 1 } }
     );
+
+    if (questionUpdate === null) {
+      res.status(400).json({success: false, msg: 'Please include a valid question id'})
+    }
+    console.log(questionUpdate);
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message });
@@ -49,10 +60,14 @@ exports.updateQuestionHelpfulness = async (req, res, next) => {
 //@route    PUT /qa/questions/:question_id/report
 exports.reportQuestion = async (req, res, next) => {
   try {
-    await Question.findOneAndUpdate(
+    const questionUpdate = await Question.findOneAndUpdate(
       { 'results.question_id': req.params.question_id },
       { $set: { 'results.$.reported': true } }
     )
+       if (questionUpdate === null) {
+      res.status(400).json({success: false, msg: 'Please include a valid question id'})
+    }
+    console.log(questionUpdate);
     res.status(200).json({ success: true });
   } catch {
     res.status(400).json({ success: false, msg: err.message });

@@ -16,17 +16,6 @@ const getQuestionIds = async () => {
   } catch (e) { console.log(e.message); }
 }
 
-// const populateDb = () => {
-//   let questions = getQuestionIds();
-//   questionIds.forEach(async function pushAnswer(doc) {
-//     try {
-//       await () => {
-//         Answer.create({question: })
-//       }
-//     }
-//   })
-// }
-
 
 //populate photos
 db.photos_data.aggregate([
@@ -40,13 +29,6 @@ db.photos_data.aggregate([
 });
 //
 
-db.answerentries.aggregate([
-  {$group: { _id: '$question_id' }}
-]).forEach(function(doc) {
-db.questionentries.updateOne({question_id: doc._id}, {$set: {'hasAnswers': true}})
-});
-
-db.questionentries.updateMany({hasAnswers: {$exists: false}}, {$set: {'hasAnswers': false}})
 
 //populate answers
 db.answerentries.aggregate([
@@ -65,7 +47,6 @@ db.answerentries.aggregate([
 });
 //
 
-db.
 
 //populate questions
 db.questions_data.aggregate([
@@ -108,17 +89,6 @@ db.answerentries.aggregate([
 ])
 //
 
-//populate answers in questions_data
-// db.answerentries.aggregate([
-//   { $group: { _id: '$question_id' } },
-//   { $project: { id: 1, body: 1, date: 1, answerer_name: 1, helpfulness: 1, photos: 1 } }
-// ], {
-//   allowDiskUse: true,
-//   cursor: {}
-// }
-// ).forEach(function (doc) {
-//   db.photos.insertOne({ answer_id: doc._id, photos: doc.photos });
-// });
 
 db.answerentries.aggregate([
   { $project: { _id: 0, question_id: 1, 'id': '$answer_id', body: 1, date: 1, answerer_name: 1, helpfulness: 1, photos: 1 } }
@@ -129,7 +99,7 @@ db.answerentries.aggregate([
   let key = doc.id;
   let update = {};
   update['answers.' + key] = { id: doc.id, body: doc.body, date: doc.date, answerer_name: doc.answerer_name, helpfulness: doc.helpfulness, photos: doc.photos };
-  db.questions_data.updateOne({ question_id: doc.question_id }, { '$set': update })
+  db.questions_data.findOneAndUpdate({ question_id: doc.question_id }, { '$set': update })
 }).allowDiskUse();
 
 
@@ -315,3 +285,32 @@ db.sample.aggregate([
 
 ]).pretty()
 db.answers.updateMany({}, { $set: { 'results.$[].reported': false } });
+
+
+//adding hasAnswers field
+//method 1
+db.answerentries.aggregate([
+  {$group: { _id: '$question_id' }},
+  {$addFields: {'hasAnswers': true}},
+  {$merge: {into: 'questionentries'}}
+], {
+  allowDiskUse: true,
+  cursor: {}
+})
+
+//fastest method
+db.answerentries.aggregate([
+  {$group: { _id: '$question_id' }}
+]).forEach(function(doc) {
+db.questionentries.findOneAndUpdate({question_id: doc._id}, {$set: {'hasAnswers': true}})
+});
+//add false values
+db.questionentries.updateMany({hasAnswers: {$exists: false}}, {$set: {'hasAnswers': false}})
+//
+
+//add questions with no answers to the answer collection
+db.questionentries.aggregate([
+  {$match: {hasAnswers: false}},
+]).forEach(function (doc) {
+  db.answers.insertOne({ question: doc.question_id, page: 1, count: 5, results: [] });
+})
