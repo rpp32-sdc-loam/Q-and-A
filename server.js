@@ -1,3 +1,4 @@
+require('newrelic');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
   res.send('This is the backend')
 })
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 if (process.env.NODE_ENV !== 'test'){
   app.listen(PORT,

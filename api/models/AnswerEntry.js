@@ -32,15 +32,4 @@ answerEntrySchema.plugin(AutoIncrement, {
     6879307
 });
 
-answerEntrySchema.virtual('answer').get(function () {
-  return {
-    answer_id: this.answer_id,
-    body: this.body,
-    answerer_name: this.answerer_name,
-    date: this.date,
-    helpfulness: this.helpfulness,
-    photos: this.photos
-  };
-});
-
 module.exports = mongoose.model('AnswerEntry', answerEntrySchema);

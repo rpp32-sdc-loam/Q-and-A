@@ -9,6 +9,7 @@ const QuestionEntry = require('../models/QuestionEntry');
 
 const router = express.Router()
 
+//db.questions.find({ product_id: 10 }).explain( "executionStats" );
 router.get('/qa/questions', async (req, res, next) => {
   try {
     const questions = await Question.find({ product_id: req.query.product_id });
@@ -40,11 +41,11 @@ router.post('/qa/questions', async (req, res, next) => {
 
 router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
   try {
-    const questionUpdate = await Question.findOneAndUpdate(
+    const questionUpdate = await Question.updateOne(
       { 'results.question_id': req.params.question_id },
       { $inc: { 'results.$.question_helpfulness': 1 } }
     );
-    if (questionUpdate === null) {
+    if (questionUpdate.matchedCount === 0) {
       let err = new Error('Please include a valid question id');
       throw err;
     }
@@ -57,11 +58,11 @@ router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
 
 router.put('/qa/questions/:question_id/report', async (req, res, next) => {
   try {
-    const questionUpdate = await Question.findOneAndUpdate(
+    const questionUpdate = await Question.updateOne(
       { 'results.question_id': req.params.question_id },
       { $set: { 'results.$.reported': true } }
     )
-    if (questionUpdate === null) {
+    if (questionUpdate.matchedCount === 0) {
       let err = new Error('Please include a valid question id');
       throw err;
     }

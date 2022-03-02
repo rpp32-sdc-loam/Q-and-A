@@ -8,7 +8,7 @@ const AnswerEntry = require('../models/AnswerEntry');
 // } = require('../controllers/answers');
 
 const router = express.Router()
-
+//db.answers.find({ question: 10 }).explain( "executionStats" );
 router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
   try {
     const answers = await Answer.find({ question: req.params.question_id });
@@ -37,11 +37,11 @@ router.post('/qa/questions/:question_id/answers', async (req, res, next) => {
 router.put('/qa/answers/:answer_id/helpful', async (req, res, next) => {
   try {
     const id = parseInt(req.params.answer_id);
-    const answerUpdate = await Answer.findOneAndUpdate(
+    const answerUpdate = await Answer.updateOne(
       { 'results.answer_id': id },
       { $inc: { 'results.$.helpfulness': 1 } }
     );
-    if (answerUpdate === null) {
+    if (answerUpdate.matchedCount === 0) {
       let err = new Error('Please include a valid answer id');
       throw err;
     }
@@ -54,11 +54,11 @@ router.put('/qa/answers/:answer_id/helpful', async (req, res, next) => {
 router.put('/qa/answers/:answer_id/report', async (req, res, next) => {
   try {
     const id = parseInt(req.params.answer_id);
-    const answerUpdate = await Answer.findOneAndUpdate(
+    const answerUpdate = await Answer.updateOne(
       { 'results.answer_id': id },
       { $set: { 'results.$.reported': true } }
     );
-     if (answerUpdate === null) {
+     if (answerUpdate.matchedCount === 0) {
       let err = new Error('Please include a valid answer id');
       throw err;
     }
