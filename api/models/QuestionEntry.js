@@ -8,7 +8,8 @@ const QuestionEntrySchema = new Schema({
   question_id: Number,
   question_body: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   asker_name: {
     type: String,
@@ -34,7 +35,7 @@ const QuestionEntrySchema = new Schema({
 
 QuestionEntrySchema.plugin(AutoIncrement, {
   inc_field: 'question_id', start_seq:
-    3518964
+  5012590
 });
 
 module.exports = mongoose.model('QuestionEntry', QuestionEntrySchema);

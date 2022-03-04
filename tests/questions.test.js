@@ -41,11 +41,11 @@ describe('GET Questions', () => {
     });
   });
 
-  test('should return 400 if id doesn\'t exist', () => {
+  test('should return 200 if id doesn\'t exist', () => {
     return request(app).get('/qa/questions').query({
       product_id: 233333334
     })
-    .expect(400);
+    .expect(200);
   });
 
   test('should return 400 if id is missing', () => {
@@ -123,9 +123,9 @@ describe('Question helpfulness', () => {
     .expect(404);
   });
 
-  xtest('should return 400 if the question id is not in the database', () => {
+  xtest('should return 200 if the question id is not in the database', () => {
       return request(app).put('/qa/questions/3434343434/helpful')
-    .expect(400);
+    .expect(200);
   });
 });
 
@@ -152,9 +152,9 @@ describe('Report a Question', () => {
     .expect(404);
   });
 
-  test('should return 400 if the question id is not in the database', () => {
+  test('should return 200 if the question id is not in the database', () => {
     return request(app).put('/qa/questions/2344444444/report')
-    .expect(400);
+    .expect(200);
   });
 });
 

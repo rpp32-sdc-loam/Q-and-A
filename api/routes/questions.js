@@ -12,10 +12,13 @@ const router = express.Router()
 //db.questions.find({ product_id: 10 }).explain( "executionStats" );
 router.get('/qa/questions', async (req, res, next) => {
   try {
-    const questions = await Question.find({ product_id: req.query.product_id });
-    if (!questions || questions.length === 0){
-      let err = new Error('The product id was not found');
+    if (!req.query.product_id){
+      let err = new Error('Product_id is missing');
       throw err;
+    }
+    const questions = await Question.find({ product_id: req.query.product_id });
+        if (questions.length === 0){
+      res.status(200).json({product_id: req.query.product_id, results: []});
     }
     res.status(200).json(questions[0]);
   } catch (err) {
@@ -45,10 +48,10 @@ router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
       { 'results.question_id': req.params.question_id },
       { $inc: { 'results.$.question_helpfulness': 1 } }
     );
-    if (questionUpdate.matchedCount === 0) {
-      let err = new Error('Please include a valid question id');
-      throw err;
-    }
+    // if (questionUpdate.matchedCount === 0) {
+    //   let err = new Error('Please include a valid question id');
+    //   throw err;
+    // }
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message});
@@ -62,10 +65,10 @@ router.put('/qa/questions/:question_id/report', async (req, res, next) => {
       { 'results.question_id': req.params.question_id },
       { $set: { 'results.$.reported': true } }
     )
-    if (questionUpdate.matchedCount === 0) {
-      let err = new Error('Please include a valid question id');
-      throw err;
-    }
+    // if (questionUpdate.matchedCount === 0) {
+    //   let err = new Error('Please include a valid question id');
+    //   throw err;
+    // }
     res.status(200).json({ success: true });
   } catch(err) {
     res.status(400).json({ success: false, msg: err.message });

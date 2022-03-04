@@ -26,9 +26,9 @@ describe('GET Answers', () => {
     });
   });
 
-  test('should return 400 if id doesn\'t exist', () => {
+  test('should return 200 if id doesn\'t exist', () => {
      return request(app).get('/qa/questions/23333333/answers')
-      .expect(400)
+      .expect(200)
   });
 
   test('should return 404 if id is missing', () => {
@@ -102,9 +102,9 @@ describe('update Answer helpfulness', () => {
     .expect(404)
   });
 
-  xtest('should return 400 if the answer id is not in the database', () => {
+  xtest('should return 200 if the answer id is not in the database', () => {
     return request(app).put('/qa/answers/233334344/helpful')
-    .expect(400)
+    .expect(200)
   });
 });
 
@@ -129,8 +129,8 @@ describe('Report Answer', () => {
     .expect(404);
   });
 
-  xtest('should return 400 if the answer id is not in the database', () => {
+  xtest('should return 200 if the answer id is not in the database', () => {
       return request(app).put('/qa/answers/23333343/report')
-    .expect(400);
+    .expect(200);
   });
 });
