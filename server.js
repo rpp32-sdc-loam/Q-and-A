@@ -26,7 +26,7 @@ app.use(answers);
 
 app.get('/', (req, res) => {
   res.send('This is the backend')
-})
+});
 
 const PORT = 5000;
 
