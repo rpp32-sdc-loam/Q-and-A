@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "NODE_ENV=test jest --watch --coverage",
-    "start": "NODE_ENV=production pm2 start server.js",
-    "stop": "pm2 stop server.js",
+    "start": "NODE_ENV=production node server",
     "dev": "NODE_ENV=development nodemon server",
     "mongo": "brew services start mongodb-community@5.0"
   },

@@ -1,5 +1,6 @@
 node_modules/
 config/config.env
 coverage
-public/app/template.js
+newrelic_agent.log
+newrelic.js
 *.pem
