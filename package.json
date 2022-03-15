@@ -30,6 +30,7 @@
     "msw": "^0.38.1",
     "newrelic": "^8.8.0",
     "pg": "^8.7.1",
+    "redis": "^4.0.4",
     "supertest": "^6.2.2"
   },
   "devDependencies": {

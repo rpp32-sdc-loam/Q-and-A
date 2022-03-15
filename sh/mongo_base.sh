@@ -1,1 +1,0 @@
-ssh -i "/Users/bonnieowens/Desktop/SDC/Q-and-A/sdcPem.pem" ubuntu@ec2-34-237-243-188.compute-1.amazonaws.com

@@ -4,3 +4,4 @@ coverage
 newrelic_agent.log
 newrelic.js
 *.pem
+dump.rdb
