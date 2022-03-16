@@ -2,7 +2,13 @@ const express = require('express');
 const Question = require('../models/Question');
 const QuestionEntry = require('../models/QuestionEntry');
 const Redis = require('ioredis');
-const redis = new Redis(6379);
+const redis = new Redis(
+  {
+  host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
+  port: 6379,
+  password: process.env.REDIS_AUTH
+}
+);
 // const { getQuestions,
 //   createQuestion,
 //   updateQuestionHelpfulness,
