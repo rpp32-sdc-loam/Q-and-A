@@ -2,7 +2,7 @@ const express = require('express');
 const Question = require('../models/Question');
 const QuestionEntry = require('../models/QuestionEntry');
 const Redis = require('ioredis');
-const redis = new Redis();
+const redis = new Redis(6379);
 // const { getQuestions,
 //   createQuestion,
 //   updateQuestionHelpfulness,
@@ -13,7 +13,6 @@ const router = express.Router();
 
 //db.questions.find({ product_id: 10 }).explain( "executionStats" );
 router.get('/qa/questions', async (req, res, next) => {
-  console.log(req.query);
   const id = req.query.product_id;
   const key = 'q' + id;
   let cache;
@@ -23,22 +22,21 @@ router.get('/qa/questions', async (req, res, next) => {
       throw err;
     }
 
-    // redis.get(key).then (res => cache = res)
-    // .catch(err => console.log(error));
+    redis.get(key).then (res => cache = res)
+    .catch(err => console.log(error));
 
-    // if (cache) {
-    //   res.status(200).send({product_id: id, results: JSON.parse(cache)})
-    // } else {
-    const questions = await Question.find({ product_id: req.query.product_id });
-    console.log(questions);
+    if (cache) {
+      res.status(200).send(JSON.parse(cache))
+    } else {
+    const questions = await Question.find({ product_id: id });
 
-    // if (questions.length === 0){
-    //   res.status(200).json({product_id: id, results: []});
-    // } else {
-      // redis.set(key, JSON.stringify(questions[0]));
-      res.status(200).json(questions[0]);
-    // }
-  // }
+    if (questions.length === 0){
+      res.status(200).json({product_id: id, results: []});
+    } else {
+      redis.set(key, JSON.stringify(questions[0]));
+      res.status(200).send(questions[0]);
+    }
+  }
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message});
   }

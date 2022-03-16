@@ -2,7 +2,7 @@ const express = require('express');
 const Answer = require('../models/Answer');
 const AnswerEntry = require('../models/AnswerEntry');
 const Redis = require('ioredis');
-const redis = new Redis();
+const redis = new Redis(6379);
 // const { getAnswers,
 //   createAnswer,
 //   updateAnswerHelpfulness,
@@ -23,12 +23,12 @@ router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
     .catch(err => console.log(error));
 
     if (cache) {
-      res.status(200).json( JSON.parse(cache))
+      res.status(200).send( JSON.parse(cache))
     } else {
     const data = await Answer.find({ question: id });
     if (data.length === 0){
       res.status(200).json({ question: id, page: page, count: count, results: []});
-    }
+    } else{
       let answers = data[0];
       let start = page * count;
       let end = start + parseInt(count);
@@ -39,6 +39,7 @@ router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
       redis.set(key, JSON.stringify(answers));
       res.status(200).json(answers);
     }
+  }
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message })
   }
