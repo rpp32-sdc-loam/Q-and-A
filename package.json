@@ -24,13 +24,13 @@
     "cors": "^2.8.5",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
+    "ioredis": "^4.28.5",
     "jest": "^27.4.7",
     "mongoose": "^6.1.8",
     "mongoose-sequence": "^5.3.1",
     "msw": "^0.38.1",
     "newrelic": "^8.8.0",
     "pg": "^8.7.1",
-    "redis": "^4.0.4",
     "supertest": "^6.2.2"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
 const express = require('express');
 const Answer = require('../models/Answer');
 const AnswerEntry = require('../models/AnswerEntry');
+const Redis = require('ioredis');
+const redis = new Redis();
 // const { getAnswers,
 //   createAnswer,
 //   updateAnswerHelpfulness,
@@ -10,12 +12,33 @@ const AnswerEntry = require('../models/AnswerEntry');
 const router = express.Router()
 //db.answers.find({ question: 10 }).explain( "executionStats" );
 router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
+  const id = req.query.question_id;
+  const page = req.query.page || 0;
+  const count = req.query.count || 5;
+  const key = 'a' + id;
+  let cache;
+
   try {
-    const answers = await Answer.find({ question: req.params.question_id });
-    if (answers.length === 0){
-      res.status(200).json({ question: req.params.question_id, page: 0, count: 5, results: []});
+    redis.get(key).then (res => cache = res)
+    .catch(err => console.log(error));
+
+    if (cache) {
+      res.status(200).json( JSON.parse(cache))
+    } else {
+    const data = await Answer.find({ question: id });
+    if (data.length === 0){
+      res.status(200).json({ question: id, page: page, count: count, results: []});
     }
-    res.status(200).json(answers[0]);
+      let answers = data[0];
+      let start = page * count;
+      let end = start + parseInt(count);
+      answers.results = data[0].results.slice(start, end);
+      answers.count = count;
+      answers.page = page;
+
+      redis.set(key, JSON.stringify(answers));
+      res.status(200).json(answers);
+    }
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message })
   }

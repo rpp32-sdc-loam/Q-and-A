@@ -7,14 +7,6 @@ const answerSchema = new Schema({
     required: true,
     unique: true
   },
-  page: {
-    type: Number,
-    default: 1
-  },
-  count: {
-    type: Number,
-    default: 5
-  },
   results: []
 });
 
