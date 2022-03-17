@@ -5,9 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "NODE_ENV=test jest --watch --coverage",
-    "start": "NODE_ENV=production pm2 start server.js",
-    "restart": "NODE_ENV=production pm2 restart server.js",
-    "stop": "pm2 stop server.js",
+    "start": "NODE_ENV=production node start server.js",
     "dev": "NODE_ENV=development nodemon server",
     "mongo": "brew services start mongodb-community@5.0"
   },
@@ -27,10 +25,11 @@
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
     "ioredis": "^4.28.5",
+    "jest": "^27.4.7",
     "mongoose": "^6.1.8",
     "mongoose-sequence": "^5.3.1",
     "newrelic": "^8.8.0",
-    "pm2": "^5.2.0"
+    "supertest": "^6.2.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

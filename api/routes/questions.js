@@ -1,14 +1,14 @@
 const express = require('express');
 const Question = require('../models/Question');
 const QuestionEntry = require('../models/QuestionEntry');
-const Redis = require('ioredis');
-const redis = new Redis(
-  {
-  host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
-  port: 6379,
-  password: process.env.REDIS_AUTH
-}
-);
+// const Redis = require('ioredis');
+// const redis = new Redis(
+//   {
+//   host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
+//   port: 6379,
+//   password: process.env.REDIS_AUTH
+// }
+// );
 
 const router = express.Router();
 
@@ -22,21 +22,21 @@ router.get('/qa/questions', async (req, res, next) => {
       throw err;
     }
 
-    redis.get(key).then (res => cache = res)
-    .catch(err => console.log(error));
+    // redis.get(key).then (res => cache = res)
+    // .catch(err => console.log(error));
 
-    if (cache) {
-      res.status(200).send(JSON.parse(cache))
-    } else {
+    // if (cache) {
+    //   res.status(200).send(JSON.parse(cache))
+    // } else {
     const questions = await Question.find({ product_id: id });
 
     if (questions.length === 0){
       res.status(200).json({product_id: id, results: []});
     } else {
-      redis.set(key, JSON.stringify(questions[0]));
+      // redis.set(key, JSON.stringify(questions[0]));
       res.status(200).send(questions[0]);
     }
-  }
+  // }
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message});
   }
@@ -70,6 +70,7 @@ router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
   }
 });
 
+
 router.put('/qa/questions/:question_id/report', async (req, res, next) => {
   try {
     const questionUpdate = await Question.updateOne(
@@ -81,5 +82,7 @@ router.put('/qa/questions/:question_id/report', async (req, res, next) => {
     res.status(400).json({ success: false, msg: err.message });
   }
 })
+
+
 
 module.exports = router;
