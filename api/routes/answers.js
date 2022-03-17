@@ -1,14 +1,12 @@
 const express = require('express');
 const Answer = require('../models/Answer');
 const AnswerEntry = require('../models/AnswerEntry');
-const Redis = require('ioredis');
-const redis = new Redis(
-  {
-    host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
-    port: 6379,
-    password: process.env.REDIS_AUTH
-  }
-);
+// const Redis = require('ioredis');
+// const redis = new Redis({
+//     host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
+//     port: 6379,
+//     password: process.env.REDIS_AUTH
+//   });
 
 const router = express.Router()
 router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
@@ -19,12 +17,12 @@ router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
   let cache;
 
   try {
-    redis.get(key).then (res => cache = res)
-    .catch(err => console.log(error));
+    // redis.get(key).then (res => cache = res)
+    // .catch(err => console.log(error));
 
-    if (cache) {
-      res.status(200).send( JSON.parse(cache))
-    } else {
+    // if (cache) {
+    //   res.status(200).send( JSON.parse(cache))
+    // } else {
     const data = await Answer.find({ question: id });
     if (data.length === 0){
       res.status(200).json({ question: id, page: page, count: count, results: []});
@@ -36,10 +34,10 @@ router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
       answers.count = count;
       answers.page = page;
 
-      redis.set(key, JSON.stringify(answers));
+      // redis.set(key, JSON.stringify(answers));
       res.status(200).json(answers);
     }
-  }
+  // }
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message })
   }
