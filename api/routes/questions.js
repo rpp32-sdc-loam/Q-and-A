@@ -70,6 +70,7 @@ router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
   }
 });
 
+
 router.put('/qa/questions/:question_id/report', async (req, res, next) => {
   try {
     const questionUpdate = await Question.updateOne(
@@ -81,5 +82,7 @@ router.put('/qa/questions/:question_id/report', async (req, res, next) => {
     res.status(400).json({ success: false, msg: err.message });
   }
 })
+
+
 
 module.exports = router;

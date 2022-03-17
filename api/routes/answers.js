@@ -2,14 +2,15 @@ const express = require('express');
 const Answer = require('../models/Answer');
 const AnswerEntry = require('../models/AnswerEntry');
 const Redis = require('ioredis');
-const redis = new Redis({
+const redis = new Redis(
+  {
     host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
     port: 6379,
     password: process.env.REDIS_AUTH
-  });
+  }
+);
 
-const router = express.Router();
-
+const router = express.Router()
 router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
   const id = req.query.question_id;
   const page = req.query.page || 0;
