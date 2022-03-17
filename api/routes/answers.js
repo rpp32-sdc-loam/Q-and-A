@@ -2,21 +2,14 @@ const express = require('express');
 const Answer = require('../models/Answer');
 const AnswerEntry = require('../models/AnswerEntry');
 const Redis = require('ioredis');
-const redis = new Redis(
-  {
+const redis = new Redis({
     host: 'ec2-34-207-41-48.compute-1.amazonaws.com',
     port: 6379,
     password: process.env.REDIS_AUTH
-  }
-);
-// const { getAnswers,
-//   createAnswer,
-//   updateAnswerHelpfulness,
-//   reportAnswer
-// } = require('../controllers/answers');
+  });
 
-const router = express.Router()
-//db.answers.find({ question: 10 }).explain( "executionStats" );
+const router = express.Router();
+
 router.get('/qa/questions/:question_id/answers', async (req, res, next) => {
   const id = req.query.question_id;
   const page = req.query.page || 0;
@@ -70,10 +63,6 @@ router.put('/qa/answers/:answer_id/helpful', async (req, res, next) => {
       { 'results.answer_id': id },
       { $inc: { 'results.$.helpfulness': 1 } }
     );
-    // if (answerUpdate.matchedCount === 0) {
-    //   let err = new Error('Please include a valid answer id');
-    //   throw err;
-    // }
     res.status(200).json({ success: true, msg: `updated answer ${req.params.answer_id} helpfulness` });
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message });
@@ -87,10 +76,6 @@ router.put('/qa/answers/:answer_id/report', async (req, res, next) => {
       { 'results.answer_id': id },
       { $set: { 'results.$.reported': true } }
     );
-    //  if (answerUpdate.matchedCount === 0) {
-    //   let err = new Error('Please include a valid answer id');
-    //   throw err;
-    // }
     res.status(200).json({ success: true, msg: `reported answer ${req.params.answer_id}` });
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message });

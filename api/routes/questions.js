@@ -9,15 +9,9 @@ const redis = new Redis(
   password: process.env.REDIS_AUTH
 }
 );
-// const { getQuestions,
-//   createQuestion,
-//   updateQuestionHelpfulness,
-//   reportQuestion
-// } = require('../controllers/Questions');
 
 const router = express.Router();
 
-//db.questions.find({ product_id: 10 }).explain( "executionStats" );
 router.get('/qa/questions', async (req, res, next) => {
   const id = req.query.product_id;
   const key = 'q' + id;
@@ -70,16 +64,11 @@ router.put('/qa/questions/:question_id/helpful', async (req, res, next) => {
       { 'results.question_id': req.params.question_id },
       { $inc: { 'results.$.question_helpfulness': 1 } }
     );
-    // if (questionUpdate.matchedCount === 0) {
-    //   let err = new Error('Please include a valid question id');
-    //   throw err;
-    // }
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(400).json({ success: false, msg: err.message});
   }
 });
-
 
 router.put('/qa/questions/:question_id/report', async (req, res, next) => {
   try {
@@ -87,16 +76,10 @@ router.put('/qa/questions/:question_id/report', async (req, res, next) => {
       { 'results.question_id': req.params.question_id },
       { $set: { 'results.$.reported': true } }
     )
-    // if (questionUpdate.matchedCount === 0) {
-    //   let err = new Error('Please include a valid question id');
-    //   throw err;
-    // }
     res.status(200).json({ success: true });
   } catch(err) {
     res.status(400).json({ success: false, msg: err.message });
   }
 })
-
-
 
 module.exports = router;
