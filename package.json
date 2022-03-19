@@ -2,11 +2,12 @@
   "name": "q-and-a",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production node server",
-    "dev": "nodemon server"
+    "test": "NODE_ENV=test jest --watch --coverage",
+    "start": "NODE_ENV=production node start server.js",
+    "dev": "NODE_ENV=development nodemon server",
+    "mongo": "brew services start mongodb-community@5.0"
   },
   "repository": {
     "type": "git",
@@ -20,11 +21,15 @@
   "homepage": "https://github.com/rpp32-sdc-loam/Q-and-A#readme",
   "dependencies": {
     "colors": "^1.4.0",
+    "cors": "^2.8.5",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
+    "ioredis": "^4.28.5",
     "jest": "^27.4.7",
     "mongoose": "^6.1.8",
-    "pg": "^8.7.1"
+    "mongoose-sequence": "^5.3.1",
+    "newrelic": "^8.8.0",
+    "supertest": "^6.2.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
